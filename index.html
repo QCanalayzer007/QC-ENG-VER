@@ -592,6 +592,90 @@
             to { opacity: 0; }
         }
         
+ #themeToggleContainer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 999;
+}
+
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    background: var(--light);
+    padding: 6px 12px;
+    border-radius: 25px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transition: background 0.3s;
+}
+
+.theme-toggle input[type="checkbox"] {
+    appearance: none;
+    width: 40px;
+    height: 20px;
+    background: #ccc;
+    border-radius: 20px;
+    position: relative;
+    outline: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.theme-toggle input[type="checkbox"]::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: white;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle input[type="checkbox"]:checked {
+    background: var(--primary);
+}
+
+.theme-toggle input[type="checkbox"]:checked::before {
+    transform: translateX(20px);
+}
+
+.theme-toggle .label-text {
+    font-size: 20px;
+    margin-left: 10px;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+}
+/* 🌙 Dark mode - Comfortable appearance for transcript */
+.dark-transcript #highlightContainer,
+.dark-transcript #transcriptInput {
+    
+    background-color: #1e1e2e !important;  /* deep, soft navy blue */
+    color: #e0e0e0 !important;             /* soft light gray */
+    border-color: #444 !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Risk highlights in dark mode */
+.dark-transcript .highlight {
+    background-color: #ff6f61;    /* bright coral red */
+    color: #fff;
+    font-weight: bold;
+    padding: 1px 3px;
+    border-radius: 3px;
+}
+
+/* Hover and active states */
+.dark-transcript .highlight:hover,
+.dark-transcript .highlight.active {
+    background-color: #ff3b30;   /* brighter red on hover */
+    color: #ffffff;
+    text-shadow: 0 0 2px #fff;
+}
+
         @media (max-width: 768px) {
             .stat-box {
                 min-width: 50%;
@@ -610,13 +694,88 @@
                 justify-content: center;
             }
         }
+        #languageSwitcher {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.85);
+    padding: 8px 10px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(6px);
+}
+
+.lang-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 4px 6px;
+    border-radius: 20px;
+}
+
+.lang-option img {
+    width: 20px;
+    height: auto;
+    margin-right: 6px;
+    border-radius: 3px;
+}
+
+.lang-option span {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+}
+
+.lang-option:hover {
+    background-color: var(--primary);
+}
+
+.lang-option:hover span {
+    color: #fff;
+}
+
+.lang-option:hover img {
+    filter: brightness(1.1);
+}
+
     </style>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
+<!-- toggle-->
+<div id="themeToggleContainer">
+  <label class="theme-toggle">
+    <input type="checkbox" id="themeToggle">
+    <span class="slider"></span>
+    <span class="label-text">
+      <i class="material-icons" id="themeIcon">dark_mode</i>
+    </span>
+  </label>
+</div>
+    <div id="languageSwitcher">
+  <div class="lang-option" onclick="switchLanguage('en')">
+    <img src="https://flagcdn.com/w40/gb.png" alt="English">
+    <span>EN</span>
+  </div>
+  <div class="lang-option" onclick="switchLanguage('jp')">
+    <img src="https://flagcdn.com/w40/jp.png" alt="Japanese">
+    <span>JP</span>
+  </div>
+  <div class="lang-option" onclick="switchLanguage('kr')">
+    <img src="https://flagcdn.com/w40/kr.png" alt="Korean">
+    <span>KR</span>
+  </div>
+</div>
+
+
     <div class="container">
         <div class="header">
-            <h1>QC Team - Transcript Analyzer (ENG ver.)</h1>
+            <h1>QC Team - Transcript Analyzer (ENG ver.)  <img src="https://flagcdn.com/w40/gb.png" alt="English"></h1>
         </div>
         
         <div>
@@ -761,7 +920,7 @@
 "automatically go in profit","each day you can make","return of minimum","really good return","daily basis profit","What is equity","you will get a return","can withdraw the profit",
 "will be making profit","can make at least","profit that you will be able to close","you'll be able to make","you'll be making around","daily profit","I can guarantee","can e take out your","we are going to talk over there","my voice clear",
 ];
-        
+     
         // Store uploaded files and their content
         const uploadedFiles = [];
         let currentFileIndex = 0;
@@ -1417,6 +1576,33 @@
                 }
             }
         });
+        // Toggle dark mode for transcript only
+document.getElementById('themeToggle').addEventListener('change', function () {
+    const body = document.body;
+    const icon = document.getElementById('themeIcon');
+    if (this.checked) {
+        body.classList.add('dark-transcript');
+        icon.textContent = 'dark_mode';  // 🌙
+    } else {
+        body.classList.remove('dark-transcript');
+        icon.textContent = 'light_mode'; // 🌞
+    }
+});
+
+function switchLanguage(lang) {
+    if (lang === 'en') {
+        window.location.href = 'https://qcanalayzer007.github.io/QC-ENG-/';
+    } else if (lang === 'jp') {
+        window.location.href = 'https://qcanalayzer007.github.io/QC-JP/';
+    } else if (lang === 'kr') {
+        window.location.href = 'https://qcanalayzer007.github.io/QC-KR/';
+    }
+}
+
+
     </script>
 </body>
 </html>
+
+
+
